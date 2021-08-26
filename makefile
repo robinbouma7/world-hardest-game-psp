@@ -1,6 +1,6 @@
 TARGET = whg-psp
-OBJS = main.o \
-glib2d.o
+OBJS = src/main.o \
+src/glib2d.o
  
 CFLAGS = -G0 -Wall -g -O2
 CXXFLAGS = $(CFLAGS) -fno-rtti  -fno-exceptions
