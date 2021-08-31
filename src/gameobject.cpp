@@ -8,7 +8,7 @@ SceCtrlData ctrldata;
 
 gameObject::gameObject(char* texturesheet, float x, float y, int w, int h, int Type) {
     if (texturesheet == NULL) {
-        objTexture = NULL;
+        objTexture = TextureManager::loadTexture("assets/ricardo.png");
     }
     else {
         objTexture = TextureManager::loadTexture(texturesheet);
@@ -86,11 +86,7 @@ void gameObject::update() {
 
 void gameObject::render() {
 	
-    if (objTexture == NULL) {
-       texture.drawRect(xpos, ypos, width, height, RED);
-    }
-    else {
-        texture.drawTexture(xpos, ypos, width, height, objTexture);
-    }
     
+        texture.drawTexture(xpos, ypos, width, height, objTexture);
+
 }

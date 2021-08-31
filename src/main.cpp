@@ -54,9 +54,9 @@ void init() {
     ball1 = new gameObject("assets/ricardo.png", 100, 5, 25, 25, 2);
     ball1->min = 5;
     ball1->max = 242;
-    ball1 = new gameObject("assets/ricardo.png", 5, 242, 25, 25, 1);
-    ball1->min = 5;
-    ball1->max = 450;
+    ball2 = new gameObject("assets/ricardo.png", 5, 242, 25, 25, 1);
+    ball2->min = 5;
+    ball2->max = 450;
 }
 
 /*oude code
