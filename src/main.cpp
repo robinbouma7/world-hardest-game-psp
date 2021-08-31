@@ -4,22 +4,25 @@
 #include <pspctrl.h>
 #include "glib2d.h"
 #include <stdlib.h>
+#include "texturemanager.hpp"
+#include "collision.hpp"
+#include "gameobject.hpp"
 
 
-float x = 12.5, y = 136;
-bool input = false;
+float x = 0, y = 126;
 float xoud = x;
 float youd = y;
 bool playing = true;
-int ballx = 200;
-int bally = 5;
-bool ballup = false;
+int level = 0;
+//TextureManager texture;
+//Collision collision;
+gameObject* player;
+gameObject* ball1;
+gameObject* ball2;
 
 
-
-PSP_MODULE_INFO("game-test", 0, 1, 1);
+PSP_MODULE_INFO("world-hardest-game", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
-
 
 //stops the game.
 //this is just code that works, so dont change this. (upcoming 3 functions)
@@ -46,23 +49,39 @@ void setupcallbacks () {
 }
 //code to stop the game ends here.
 
+void init() {
+    player = new gameObject("assets/ricardo.png", 0, 126, 25, 25, 0);
+    ball1 = new gameObject("assets/ricardo.png", 100, 5, 25, 25, 2);
+    ball1->min = 5;
+    ball1->max = 242;
+    ball1 = new gameObject("assets/ricardo.png", 5, 242, 25, 25, 1);
+    ball1->min = 5;
+    ball1->max = 450;
+}
+
+/*oude code
+int resetplayer() {
+    //reset player
+    x = 0; 
+    y = 126;
+    return 0;
+}
+
+
 int moveBalls() {
     if (ballup) {
         if (bally <= 5) {
             ballup = false;
         }
+        bally--;
     }
     else if (!ballup) {
         if (bally >= 267) {
             ballup = true;
         }
+        bally++;
     }
-    g2dBeginRects(NULL); // No texture
-    g2dSetColor(BLUE);
-    g2dSetScaleWH(25,25);
-    g2dSetCoordXY(ballx,bally);
-    g2dAdd();
-    g2dEnd();
+    texture.drawRect(ballx, bally, 20, 20, BLUE);
     return 0;
 }
 
@@ -80,7 +99,7 @@ int finish() {
         
         if (ctrldata.Buttons & PSP_CTRL_CROSS) {
             //reset player
-            
+            resetplayer();
             playing = true;
             return 0;
         }
@@ -88,10 +107,10 @@ int finish() {
 }
 
 int finishcheck() {
-    float playertop = y - 12.4;
-    float playerbottom = y + 12.4;
-    float playerleft = x - 12.4;
-    float playerright = x + 12.4;
+    float playertop = y;
+    float playerbottom = y + 20;
+    float playerleft = x;
+    float playerright = x + 20;
 
 
         if (playertop > 161 || playerright < 430 || playerbottom < 111 || playerleft > 480) {
@@ -112,23 +131,12 @@ int muurheight[8] = {68, 1, 116, 115, 6, 6, 105, 161};
 
 int drawwalls() {
     //draw the walls    
-    for (int j = 0; j < 8; j++) {
-        g2dBeginRects(NULL); // No texture
-        g2dSetColor(WHITE);
-        g2dSetScaleWH(muurwidth[j],muurheight[j]);
-        g2dSetCoordXY(muurleft[j],muurtop[j]);
-        g2dAdd();
-        g2dEnd();
-    
+    for (int i = 0; i < 8; i++) {
+        texture.drawRect(muurleft[i], muurtop[i], muurwidth[i], muurheight[i], WHITE);
     }
     
     //draw the finish
-    g2dBeginRects(NULL); // No texture
-    g2dSetColor(GREEN);
-    g2dSetScaleWH(50,50);
-    g2dSetCoordXY(430,111);
-    g2dAdd();
-    g2dEnd();
+    texture.drawRect(430, 111, 50, 50, GREEN);
 
     return 0;
 }
@@ -139,14 +147,9 @@ int drawstuff() {
     //draw stuff
     g2dClear(BLACK);
 
-    drawwalls();       
-
-    g2dBeginRects(NULL); // No texture
-    g2dSetColor(RED);
-    g2dSetScaleWH(25,25);
-    g2dSetCoordXY(x,y);
-    g2dAdd();
-    g2dEnd();
+    drawwalls();
+    moveBalls();     
+    texture.drawRect(x, y, 20, 20, RED);
                
     g2dFlip(G2D_VSYNC);
     
@@ -159,73 +162,62 @@ int drawstuff() {
 int collision() {
     
     //0.1 difference so only collision on overlap
-        float playertop = y + 0.1;
-        float playerbottom = y + 3.9;
-        float playerleft = x + 0.1;
-        float playerright = x + 3.9;
+    float playertop = y;
+    float playerbottom = y + 20;
+    float playerleft = x;
+    float playerright = x + 20;
 
-        for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
 
-            int muur_top = muurtop[i];
-            int muur_bottom = muurtop[i] + muurheight[i];
-            int muur_left = muurleft[i];
-            int muur_right = muurleft[i] + muurwidth[i];
+        int muur_top = muurtop[i];
+        int muur_bottom = muurtop[i] + muurheight[i];
+        int muur_left = muurleft[i];
+        int muur_right = muurleft[i] + muurwidth[i];
 
-            if (playertop > muur_bottom || playerright < muur_left || playerbottom < muur_top || playerleft > muur_right) {
-
-            }
-            else {
-                //collision
-                x = xoud;
-                y = youd;
-                
-            }
+        if (playertop > muur_bottom || playerright < muur_left || playerbottom < muur_top || playerleft > muur_right) {
 
         }
+        else {
+            //collision
+            x = xoud;
+            y = youd;
+                
+        }
+
+    }
     drawstuff();
     return 0;
+}*/
+void update() {
+    player->update();
+    ball1->update();
+    ball2->update();
 }
+void render() {
+    g2dClear(BLACK);
 
+    player->render();
+    ball1->render();
+    ball2->render();
+    g2dFlip(G2D_VSYNC);
+}
 
 
 auto main() -> int {
     
     setupcallbacks();
-
+    init();
     //player sprite
     
 
     //movement under here
-    SceCtrlData ctrldata;
+   
+
     while(playing) {
             
-            sceCtrlReadBufferPositive(&ctrldata, 1);
-
-                xoud = x;
-                youd = y;
-        
-
-                if (ctrldata.Buttons & PSP_CTRL_UP) { 
-                    y -= 0.5;
-                }
-
-                if (ctrldata.Buttons & PSP_CTRL_DOWN) {
-                    y += 0.5;
-                }
-
-                if (ctrldata.Buttons & PSP_CTRL_RIGHT) {                  
-                    x += 0.5;
-                }
-
-                if (ctrldata.Buttons & PSP_CTRL_LEFT) {                   
-                        x -= 0.5; 
-                }
-                              
-                else {
-                    
-                }
-        
-                collision();
+            
+              update();
+              render();  
               
     }
     
