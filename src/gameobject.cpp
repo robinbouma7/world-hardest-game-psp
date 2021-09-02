@@ -1,9 +1,11 @@
 #include "gameobject.hpp"
 #include "texturemanager.hpp"
 #include <pspctrl.h>
+#include "game.hpp"
 
 TextureManager texture;
 SceCtrlData ctrldata;
+Game maingame;
 
 
 gameObject::gameObject(char* texturesheet, float x, float y, int w, int h, int Type) {
@@ -48,7 +50,8 @@ void gameObject::update() {
                 if (ctrldata.Buttons & PSP_CTRL_LEFT) {                   
                     xpos -= 1; 
                 }
-                              
+
+               
                
         break;
         case 1:

@@ -1,11 +1,11 @@
 #include "glib2d.h"
 #include <stdlib.h>
+#include "game.hpp"
 
 class Collision {
 public:
-
-    bool wallcol(float x, float y, int w, int h, int level);
-    bool diecol(float x, float y, int w, int h);
+    bool wallcol(gameObject* Player, int level);
+    bool diecol(gameObject* Player, gameObject* Enemy);
 private:
     int muurtop[1][8] = {47, 151, 0, 157, 0, 266, 6, 161};
     int muurleft[1][8] = {45, 0, 0, 0, 6, 6, 474, 474};

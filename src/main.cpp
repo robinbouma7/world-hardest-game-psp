@@ -6,19 +6,14 @@
 #include <stdlib.h>
 #include "texturemanager.hpp"
 #include "collision.hpp"
-#include "gameobject.hpp"
+#include "game.hpp"
 
 
-float x = 0, y = 126;
-float xoud = x;
-float youd = y;
+Game* game = nullptr;
 bool playing = true;
-int level = 0;
 //TextureManager texture;
 //Collision collision;
-gameObject* player;
-gameObject* ball1;
-gameObject* ball2;
+
 
 
 PSP_MODULE_INFO("world-hardest-game", 0, 1, 1);
@@ -49,15 +44,31 @@ void setupcallbacks () {
 }
 //code to stop the game ends here.
 
-void init() {
-    player = new gameObject("assets/ricardo.png", 0, 126, 25, 25, 0);
-    ball1 = new gameObject("assets/ricardo.png", 100, 5, 25, 25, 2);
-    ball1->min = 5;
-    ball1->max = 242;
-    ball2 = new gameObject("assets/ricardo.png", 5, 242, 25, 25, 1);
-    ball2->min = 5;
-    ball2->max = 450;
+
+
+
+
+
+auto main() -> int {
+    
+    game = new Game();
+    setupcallbacks();
+    game->init();
+    //player sprite
+    
+
+    //movement under here
+   
+
+    while(playing) {
+
+        game->update();
+        game->render();           
+    }
+    
 }
+
+
 
 /*oude code
 int resetplayer() {
@@ -188,37 +199,3 @@ int collision() {
     drawstuff();
     return 0;
 }*/
-void update() {
-    player->update();
-    ball1->update();
-    ball2->update();
-}
-void render() {
-    g2dClear(BLACK);
-
-    player->render();
-    ball1->render();
-    ball2->render();
-    g2dFlip(G2D_VSYNC);
-}
-
-
-auto main() -> int {
-    
-    setupcallbacks();
-    init();
-    //player sprite
-    
-
-    //movement under here
-   
-
-    while(playing) {
-            
-            
-              update();
-              render();  
-              
-    }
-    
-}

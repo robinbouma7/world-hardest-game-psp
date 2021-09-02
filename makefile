@@ -3,6 +3,7 @@ OBJS = src/main.o \
 src/texturemanager.o \
 src/gameobject.o \
 src/collision.o \
+src/game.o \
 src/glib2d.o
  
 CFLAGS = -G0 -Wall -g -O2

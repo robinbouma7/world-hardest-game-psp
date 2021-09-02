@@ -1,4 +1,7 @@
+#ifndef gameobject
+#define gameobject
 #include "glib2d.h"
+
 
 class gameObject {
 
@@ -24,3 +27,4 @@ private:
 	g2dTexture* objTexture;
 	
 };
+#endif
